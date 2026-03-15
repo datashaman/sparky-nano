@@ -24,6 +24,7 @@ jobs:
         with:
           trigger_phrase: ""
           track_progress: true
+          show_full_output: true
           prompt: |
             You are triaging issue #${{ github.event.issue.number }}.
 
