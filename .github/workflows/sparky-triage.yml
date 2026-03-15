@@ -53,5 +53,7 @@ jobs:
             End your response with:
             > Comment `@sparky implement` to approve this plan and start implementation.
 
-            IMPORTANT: Do NOT modify any files. This is a read-only triage step.
+            IMPORTANT: Do NOT modify any files. Do NOT create branches. Do NOT commit or push. This is a read-only triage step. Your only job is to analyze and produce a plan.
+          claude_args: |
+            --disallowedTools "Edit,Write,NotebookEdit,Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(git rm:*)"
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}

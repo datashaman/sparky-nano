@@ -42,5 +42,7 @@ jobs:
             - Do NOT modify any files. This is a read-only interaction.
             - Do NOT create branches or pull requests.
             - If the user wants implementation, tell them to comment `@sparky implement`.
+          claude_args: |
+            --disallowedTools "Edit,Write,NotebookEdit,Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(git rm:*)"
           show_full_output: true
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
