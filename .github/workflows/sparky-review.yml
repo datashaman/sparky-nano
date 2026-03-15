@@ -44,4 +44,5 @@ jobs:
             - Explain what you changed in your reply
             - If you disagree with feedback, explain your reasoning but defer to the reviewer
             - Do NOT force-push or rebase — add new commits only
+          show_full_output: true
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
