@@ -1,4 +1,4 @@
-name: "Sparky: Triage Issue"
+name: "Sparky: Analyze"
 
 on:
   issues:
