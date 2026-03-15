@@ -31,6 +31,7 @@ jobs:
             You are implementing the approved plan for issue #${{ github.event.issue.number }}.
 
             Title: ${{ github.event.issue.title }}
+            Body: ${{ github.event.issue.body }}
 
             Instructions:
             1. Read the issue description and all comments (especially the triage plan)

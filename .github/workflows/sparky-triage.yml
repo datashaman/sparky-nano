@@ -27,6 +27,7 @@ jobs:
             You are triaging issue #${{ github.event.issue.number }}.
 
             Title: ${{ github.event.issue.title }}
+            Body: ${{ github.event.issue.body }}
 
             Your task:
             1. Read the issue description carefully
