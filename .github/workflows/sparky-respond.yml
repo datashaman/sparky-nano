@@ -56,6 +56,9 @@ jobs:
             - If the change would exceed ~500 lines, split into smaller PRs and explain the strategy
             - After committing and pushing, create the PR using: gh pr create --title "<title>" --body "<body>" --base main
             - Do NOT just provide a "Create PR" link. Actually create the PR.
+            - When running gh pr create, pass the --body as a plain inline string. Do NOT use heredocs, subshells, or cat.
+            - Do NOT use # characters in the PR body — they trigger a security check that blocks the command. Use plain text or dashes for headings instead.
+            - Only call gh pr create ONCE. If it succeeds, do not retry.
           claude_args: |
             --allowedTools "Bash(gh pr create:*)"
           show_full_output: true
