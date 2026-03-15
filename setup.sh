@@ -26,12 +26,12 @@ for workflow in sparky-analyze.yml sparky-respond.yml; do
   echo "Copied $workflow"
 done
 
-# Copy CLAUDE.md only if it doesn't already exist
-if [ -f "$TARGET/CLAUDE.md" ]; then
-  echo "Skipped CLAUDE.md (already exists — merge manually if needed)"
+# Copy SPARKY.md only if it doesn't already exist
+if [ -f "$TARGET/SPARKY.md" ]; then
+  echo "Skipped SPARKY.md (already exists — merge manually if needed)"
 else
-  cp "$SCRIPT_DIR/CLAUDE.md" "$TARGET/CLAUDE.md"
-  echo "Copied CLAUDE.md"
+  cp "$SCRIPT_DIR/SPARKY.md" "$TARGET/SPARKY.md"
+  echo "Copied SPARKY.md"
 fi
 
 echo ""
@@ -40,7 +40,7 @@ echo "  1. Add ANTHROPIC_API_KEY to your repo's Actions secrets"
 echo "     Settings -> Secrets and variables -> Actions -> New repository secret"
 echo "  2. Create a 'sparky' label in your repo"
 echo "     Issues -> Labels -> New label"
-echo "  3. Customize CLAUDE.md with your project's build/test commands"
+echo "  3. Customize SPARKY.md with your project's build/test commands"
 echo "  4. Commit and push the new files"
 echo ""
 echo "How to interact with Sparky:"
