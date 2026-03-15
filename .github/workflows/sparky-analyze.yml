@@ -10,7 +10,7 @@ permissions:
   id-token: write
 
 jobs:
-  triage:
+  analyze:
     if: github.event.label.name == 'sparky'
     runs-on: ubuntu-latest
     steps:
@@ -19,13 +19,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Triage with Claude
+      - name: Read SPARKY.md
+        id: sparky_md
+        run: |
+          content=$(cat SPARKY.md 2>/dev/null || echo "")
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$content" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Analyze with Claude
         uses: anthropics/claude-code-action@v1
         with:
           trigger_phrase: ""
           track_progress: true
           show_full_output: true
           prompt: |
+            ${{ steps.sparky_md.outputs.content }}
+
             You are triaging issue #${{ github.event.issue.number }}.
 
             Title: ${{ github.event.issue.title }}
@@ -35,7 +45,7 @@ jobs:
             1. Read the issue description carefully
             2. Explore the codebase to understand the relevant code
             3. Identify the root cause (for bugs) or the best approach (for features)
-            4. Produce a detailed triage plan (your response will be posted as a comment)
+            4. Produce a detailed analysis and plan (your response will be posted as a comment)
 
             If the issue is unclear, ambiguous, or missing critical details:
             - Ask specific clarifying questions
@@ -53,7 +63,7 @@ jobs:
             End your response with:
             > Comment `@sparky implement` to approve this plan and start implementation.
 
-            IMPORTANT: Do NOT modify any files. Do NOT create branches. Do NOT commit or push. This is a read-only triage step. Your only job is to analyze and produce a plan.
+            IMPORTANT: Do NOT modify any files. Do NOT create branches. Do NOT commit or push. This is a read-only analysis step. Your only job is to analyze and produce a plan.
           claude_args: |
             --disallowedTools "Edit,Write,NotebookEdit,Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(git rm:*)"
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
