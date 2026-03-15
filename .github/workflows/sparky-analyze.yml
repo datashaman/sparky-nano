@@ -19,14 +19,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Read SPARKY.md
-        id: sparky_md
-        run: |
-          content=$(cat SPARKY.md 2>/dev/null || echo "")
-          echo "content<<EOF" >> $GITHUB_OUTPUT
-          echo "$content" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
       - name: Triage with Claude
         uses: anthropics/claude-code-action@v1
         with:
@@ -34,8 +26,6 @@ jobs:
           track_progress: true
           show_full_output: true
           prompt: |
-            ${{ steps.sparky_md.outputs.content }}
-
             You are triaging issue #${{ github.event.issue.number }}.
 
             Title: ${{ github.event.issue.title }}
