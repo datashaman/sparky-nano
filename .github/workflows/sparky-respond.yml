@@ -24,6 +24,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Read SPARKY.md
+        id: sparky_md
+        run: |
+          content=$(cat SPARKY.md 2>/dev/null || echo "")
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$content" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Implement with Claude
         uses: anthropics/claude-code-action@v1
         with:
@@ -31,6 +39,8 @@ jobs:
           track_progress: true
           branch_prefix: "sparky/"
           prompt: |
+            ${{ steps.sparky_md.outputs.content }}
+
             You are implementing the approved plan for issue #${{ github.event.issue.number }}.
 
             Title: ${{ github.event.issue.title }}
@@ -76,12 +86,22 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Read SPARKY.md
+        id: sparky_md_interactive
+        run: |
+          content=$(cat SPARKY.md 2>/dev/null || echo "")
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$content" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Respond with Claude
         uses: anthropics/claude-code-action@v1
         with:
           trigger_phrase: "@sparky"
           track_progress: true
           prompt: |
+            ${{ steps.sparky_md_interactive.outputs.content }}
+
             You are answering a question or revising a plan on issue #${{ github.event.issue.number }}.
 
             Title: ${{ github.event.issue.title }}
@@ -112,12 +132,22 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Read SPARKY.md
+        id: sparky_md_review
+        run: |
+          content=$(cat SPARKY.md 2>/dev/null || echo "")
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$content" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Respond to review with Claude
         uses: anthropics/claude-code-action@v1
         with:
           trigger_phrase: "@sparky"
           track_progress: true
           prompt: |
+            ${{ steps.sparky_md_review.outputs.content }}
+
             You are responding to PR review feedback.
 
             Instructions:
