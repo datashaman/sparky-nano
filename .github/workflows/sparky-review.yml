@@ -28,6 +28,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           trigger_phrase: "@sparky"
+          track_progress: true
           prompt: |
             You are responding to PR review feedback.
 

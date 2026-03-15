@@ -26,6 +26,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           trigger_phrase: "@sparky implement"
+          track_progress: true
           branch_prefix: "sparky/"
           prompt: |
             You are implementing the approved plan for issue #${{ github.event.issue.number }}.
