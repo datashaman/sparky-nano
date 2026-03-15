@@ -47,7 +47,7 @@ jobs:
             Body: ${{ github.event.issue.body }}
 
             Instructions:
-            1. Read the issue description and all comments (especially the triage plan)
+            1. Read the issue description and all comments (especially the analysis plan)
             2. Implement the changes described in the approved plan
             3. Follow existing code patterns and conventions
             4. Add or update tests for your changes
@@ -60,7 +60,7 @@ jobs:
             - `Fixes #${{ github.event.issue.number }}`
 
             IMPORTANT:
-            - Follow the plan from the triage step closely
+            - Follow the plan from the analysis step closely
             - Make conservative, minimal changes
             - Do NOT modify CI/CD pipelines unless the issue specifically requests it
             - If the change would exceed ~500 lines, split into smaller PRs and explain the strategy
