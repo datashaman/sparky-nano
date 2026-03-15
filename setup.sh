@@ -21,7 +21,7 @@ fi
 mkdir -p "$TARGET/.github/workflows"
 
 # Copy workflow files
-for workflow in sparky-triage.yml sparky-execute.yml sparky-review.yml sparky-interactive.yml; do
+for workflow in sparky-triage.yml sparky-respond.yml; do
   cp "$SCRIPT_DIR/.github/workflows/$workflow" "$TARGET/.github/workflows/$workflow"
   echo "Copied $workflow"
 done
