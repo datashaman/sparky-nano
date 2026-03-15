@@ -1,0 +1,43 @@
+name: "Sparky: Interactive Q&A"
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  respond:
+    if: |
+      !github.event.issue.pull_request
+      && contains(github.event.comment.body, '@sparky')
+      && !contains(github.event.comment.body, '@sparky implement')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Respond with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          trigger_phrase: "@sparky"
+          prompt: |
+            You are answering a question or revising a plan on issue #${{ github.event.issue.number }}.
+
+            Title: ${{ github.event.issue.title }}
+
+            Instructions:
+            1. Read the question or feedback in the comment
+            2. Explore the codebase if needed to give an accurate answer
+            3. If asked to revise a plan, post an updated plan
+            4. Be helpful and specific — reference actual files, functions, and line numbers
+
+            IMPORTANT:
+            - Do NOT modify any files. This is a read-only interaction.
+            - Do NOT create branches or pull requests.
+            - If the user wants implementation, tell them to comment `@sparky implement`.
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}

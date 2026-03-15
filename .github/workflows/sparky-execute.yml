@@ -1,0 +1,52 @@
+name: "Sparky: Execute Implementation"
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  execute:
+    if: |
+      !github.event.issue.pull_request
+      && contains(github.event.comment.body, '@sparky implement')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Implement with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          trigger_phrase: "@sparky implement"
+          branch_prefix: "sparky/"
+          prompt: |
+            You are implementing the approved plan for issue #${{ github.event.issue.number }}.
+
+            Title: ${{ github.event.issue.title }}
+
+            Instructions:
+            1. Read the issue description and all comments (especially the triage plan)
+            2. Implement the changes described in the approved plan
+            3. Follow existing code patterns and conventions
+            4. Add or update tests for your changes
+            5. Ensure all existing tests still pass
+            6. Create a pull request with a clear description
+
+            Your PR description MUST include:
+            - What was changed and why
+            - How it was tested
+            - `Fixes #${{ github.event.issue.number }}`
+
+            IMPORTANT:
+            - Follow the plan from the triage step closely
+            - Make conservative, minimal changes
+            - Do NOT modify CI/CD pipelines unless the issue specifically requests it
+            - If the change would exceed ~500 lines, split into smaller PRs and explain the strategy
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}

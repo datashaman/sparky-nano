@@ -1,0 +1,53 @@
+name: "Sparky: Triage Issue"
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  triage:
+    if: github.event.label.name == 'sparky'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Triage with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          trigger_phrase: ""
+          prompt: |
+            You are triaging issue #${{ github.event.issue.number }}.
+
+            Title: ${{ github.event.issue.title }}
+
+            Your task:
+            1. Read the issue description carefully
+            2. Explore the codebase to understand the relevant code
+            3. Identify the root cause (for bugs) or the best approach (for features)
+            4. Post a detailed plan as a comment on this issue
+
+            If the issue is unclear, ambiguous, or missing critical details:
+            - Ask specific clarifying questions
+            - Explain what you need to know and why
+            - Do NOT propose a plan until you have enough information
+            - End with: "Please answer these questions so I can propose a plan."
+
+            If the issue is clear enough to plan, your comment MUST include:
+            - **Summary**: One-line description of what needs to change
+            - **Analysis**: What you found in the codebase
+            - **Plan**: Numbered list of specific changes (files, functions, logic)
+            - **Risks**: Anything that could go wrong or needs careful handling
+            - **Estimated scope**: Small / Medium / Large
+
+            End your comment with:
+            > Comment `@sparky implement` to approve this plan and start implementation.
+
+            IMPORTANT: Do NOT modify any files. This is a read-only triage step.
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
