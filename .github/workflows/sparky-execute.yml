@@ -52,5 +52,9 @@ jobs:
             - Make conservative, minimal changes
             - Do NOT modify CI/CD pipelines unless the issue specifically requests it
             - If the change would exceed ~500 lines, split into smaller PRs and explain the strategy
+            - After committing and pushing, create the PR using: gh pr create --title "<title>" --body "<body>" --base main
+            - Do NOT just provide a "Create PR" link. Actually create the PR.
+          claude_args: |
+            --allowedTools "Bash(gh pr create:*)"
           show_full_output: true
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
