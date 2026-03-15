@@ -2,7 +2,7 @@
 
 A minimal GitHub Actions harness that turns [Claude](https://claude.ai) into an autonomous development agent for any repository.
 
-sparky-nano installs two workflow files into your repo. Once set up, you can label an issue to trigger a triage plan, approve the plan to kick off implementation, and get automated responses to PR review comments — all driven by Claude.
+sparky-nano installs two workflow files into your repo. Once set up, you can label an issue to trigger an analysis and plan, approve the plan to kick off implementation, and get automated responses to PR review comments — all driven by Claude.
 
 ---
 
@@ -18,7 +18,7 @@ Label: sparky
      │
      ▼
 ┌─────────────┐    needs info    ┌──────────────────────┐
-│   TRIAGE    │ ───────────────► │  Ask clarifying Qs   │
+│   ANALYZE   │ ───────────────► │  Ask clarifying Qs   │
 │ (read-only) │                  └──────────────────────┘
 └──────┬──────┘
        │ plan posted as comment
@@ -41,7 +41,7 @@ Comment: @sparky implement
 
 | Stage | Trigger | What Claude does |
 |-------|---------|-----------------|
-| **Triage** | Add `sparky` label to an issue | Explores the codebase, proposes a plan, posts it as a comment |
+| **Analyze** | Add `sparky` label to an issue | Explores the codebase, proposes a plan, posts it as a comment |
 | **Implement** | Comment `@sparky implement` on the issue | Creates a `sparky/` branch, implements the plan, opens a PR |
 | **Review** | Comment `@sparky` on a PR, or add a PR review comment | Addresses feedback with fixup commits |
 
@@ -59,18 +59,18 @@ cd sparky-nano
 ./setup.sh /path/to/your-target-repo
 ```
 
-`setup.sh` copies two workflow files and `CLAUDE.md` into your target repo:
+`setup.sh` copies two workflow files and `SPARKY.md` into your target repo:
 
 ```
 your-target-repo/
 ├── .github/
 │   └── workflows/
-│       ├── sparky-analyze.yml   ← triage workflow
+│       ├── sparky-analyze.yml   ← analyze workflow
 │       └── sparky-respond.yml  ← implement + review workflow
-└── CLAUDE.md                   ← agent instructions (customize this)
+└── SPARKY.md                   ← agent instructions (customize this)
 ```
 
-> **Note**: If a `CLAUDE.md` already exists in your target repo, `setup.sh` will skip it and remind you to merge manually.
+> **Note**: If a `SPARKY.md` already exists in your target repo, `setup.sh` will skip it and remind you to merge manually.
 
 Then, in your target repo:
 
@@ -78,7 +78,7 @@ Then, in your target repo:
 cd /path/to/your-target-repo
 git add .github/workflows/sparky-analyze.yml \
         .github/workflows/sparky-respond.yml \
-        CLAUDE.md
+        SPARKY.md
 git commit -m "Add Sparky autonomous agent workflows"
 git push
 ```
@@ -95,14 +95,14 @@ After running `setup.sh`, complete these one-time steps in your target repositor
 2. **Create a `sparky` label**
    Go to **Issues → Labels → New label** and create a label named exactly `sparky`.
 
-3. **Customize `CLAUDE.md`** (optional but recommended)
-   Open `CLAUDE.md` and fill in the **Target Repo Instructions** section at the bottom with project-specific context — see [Customizing CLAUDE.md](#customizing-claudemd) below.
+3. **Customize `SPARKY.md`** (optional but recommended)
+   Open `SPARKY.md` and fill in the **Target Repo Instructions** section at the bottom with project-specific context — see [Customizing SPARKY.md](#customizing-sparkymd) below.
 
 ---
 
 ### Usage
 
-#### Trigger a triage
+#### Trigger analysis
 
 1. Open or find an issue in your target repo.
 2. Add the `sparky` label.
@@ -110,7 +110,7 @@ After running `setup.sh`, complete these one-time steps in your target repositor
 
 #### Approve implementation
 
-Once you're happy with the triage plan, comment on the issue:
+Once you're happy with the plan, comment on the issue:
 
 ```
 @sparky implement
@@ -140,9 +140,9 @@ Claude will push fixup commits to the PR branch.
 
 ---
 
-### Customizing CLAUDE.md
+### Customizing SPARKY.md
 
-The `CLAUDE.md` file controls how Claude behaves as an agent. The **Target Repo Instructions** section at the bottom is the right place to add project-specific context:
+The `SPARKY.md` file controls how Claude behaves as an agent. The **Target Repo Instructions** section at the bottom is the right place to add project-specific context:
 
 ```markdown
 ## Target Repo Instructions
@@ -154,7 +154,7 @@ The `CLAUDE.md` file controls how Claude behaves as an agent. The **Target Repo 
 - Key architecture decisions or constraints
 ```
 
-The rest of `CLAUDE.md` contains Sparky's core principles and stage-specific rules. You can adjust these too, but the defaults are designed to be conservative and safe.
+The rest of `SPARKY.md` contains Sparky's core principles and stage-specific rules. You can adjust these too, but the defaults are designed to be conservative and safe.
 
 ---
 
