@@ -23,6 +23,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           trigger_phrase: ""
+          track_progress: true
           prompt: |
             You are triaging issue #${{ github.event.issue.number }}.
 
@@ -33,7 +34,7 @@ jobs:
             1. Read the issue description carefully
             2. Explore the codebase to understand the relevant code
             3. Identify the root cause (for bugs) or the best approach (for features)
-            4. Post a detailed plan as a comment on this issue
+            4. Produce a detailed triage plan (your response will be posted as a comment)
 
             If the issue is unclear, ambiguous, or missing critical details:
             - Ask specific clarifying questions
@@ -41,14 +42,14 @@ jobs:
             - Do NOT propose a plan until you have enough information
             - End with: "Please answer these questions so I can propose a plan."
 
-            If the issue is clear enough to plan, your comment MUST include:
+            If the issue is clear enough to plan, your response MUST include:
             - **Summary**: One-line description of what needs to change
             - **Analysis**: What you found in the codebase
             - **Plan**: Numbered list of specific changes (files, functions, logic)
             - **Risks**: Anything that could go wrong or needs careful handling
             - **Estimated scope**: Small / Medium / Large
 
-            End your comment with:
+            End your response with:
             > Comment `@sparky implement` to approve this plan and start implementation.
 
             IMPORTANT: Do NOT modify any files. This is a read-only triage step.
