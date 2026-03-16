@@ -21,7 +21,7 @@ fi
 mkdir -p "$TARGET/.github/workflows"
 
 # Copy workflow files
-for workflow in sparky-analyze.yml sparky-respond.yml; do
+for workflow in sparky-analyze.yml sparky-respond.yml sparky-discuss.yml; do
   cp "$SCRIPT_DIR/.github/workflows/$workflow" "$TARGET/.github/workflows/$workflow"
   echo "Copied $workflow"
 done
@@ -40,11 +40,15 @@ echo "  1. Add ANTHROPIC_API_KEY to your repo's Actions secrets"
 echo "     Settings -> Secrets and variables -> Actions -> New repository secret"
 echo "  2. Create a 'sparky' label in your repo"
 echo "     Issues -> Labels -> New label"
-echo "  3. Customize SPARKY.md with your project's build/test commands"
-echo "  4. Commit and push the new files"
+echo "  3. Enable GitHub Discussions on your repo (optional, but recommended)"
+echo "     Settings -> Features -> Discussions"
+echo "  4. Customize SPARKY.md with your project's build/test commands"
+echo "  5. Commit and push the new files"
 echo ""
 echo "How to interact with Sparky:"
-echo "  5. Label an issue 'sparky' -> Sparky analyzes it and posts a plan"
-echo "  6. Comment '@sparky <question>' on an issue -> Ask questions or request plan revisions"
-echo "  7. Comment '@sparky implement' on an issue -> Approve the plan and trigger implementation"
-echo "  8. Comment '@sparky' on a PR -> Sparky addresses review feedback and pushes fixes"
+echo "  6. Label an issue 'sparky' -> Sparky analyzes it and posts a plan"
+echo "     (If clarification is needed, Sparky opens a GitHub Discussion)"
+echo "  7. Comment '@sparky <question>' on an issue -> Sparky moves Q&A to a Discussion"
+echo "  8. Comment '@sparky finalize' in the Discussion -> Posts the approved plan to the issue"
+echo "  9. Comment '@sparky implement' on an issue -> Approve the plan and trigger implementation"
+echo " 10. Comment '@sparky' on a PR -> Sparky addresses review feedback and pushes fixes"
