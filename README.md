@@ -17,10 +17,11 @@ Issue opened
 Label: sparky
      │
      ▼
-┌─────────────┐    needs info    ┌──────────────────────┐
-│   ANALYZE   │ ───────────────► │  Ask clarifying Qs   │
-│ (read-only) │                  └──────────────────────┘
-└──────┬──────┘
+┌─────────────┐    needs info    ┌──────────────────────────────────┐
+│   ANALYZE   │ ───────────────► │  GitHub Discussion (refinement)  │
+│ (read-only) │                  │  @sparky <question> on issue     │
+└──────┬──────┘                  │  @sparky finalize → posts plan   │
+       │                         └──────────────────────────────────┘
        │ plan posted as comment
        ▼
 Comment: @sparky implement
@@ -41,11 +42,12 @@ Comment: @sparky implement
 
 | Stage | Trigger | What Claude does |
 |-------|---------|-----------------|
-| **Analyze** | Add `sparky` label to an issue | Explores the codebase, proposes a plan, posts it as a comment |
+| **Analyze** | Add `sparky` label to an issue | Explores the codebase, proposes a plan, posts it as a comment. If clarification is needed, opens a GitHub Discussion and links to it. |
+| **Discuss** | Comment `@sparky <question>` on an issue, or use `@sparky` in a linked Discussion | Moves Q&A to a GitHub Discussion, keeping the issue thread clean. `@sparky finalize` in the discussion posts the approved plan back to the issue. |
 | **Implement** | Comment `@sparky implement` on the issue | Creates a `sparky/` branch, implements the plan, opens a PR |
 | **Review** | Comment `@sparky` on a PR, or add a PR review comment | Addresses feedback with fixup commits |
 
-You can also ask questions at any point by commenting `@sparky <your question>` on an issue (without "implement") and Claude will respond without modifying any files.
+Refinement Q&A happens in a GitHub Discussion (titled `Sparky Refinement: Issue #N — <title>`) rather than cluttering the issue thread. When you're happy with the plan, comment `@sparky finalize` in the discussion to post it back to the issue, then `@sparky implement` on the issue to kick off implementation.
 
 ---
 
@@ -59,14 +61,15 @@ cd sparky-nano
 ./setup.sh /path/to/your-target-repo
 ```
 
-`setup.sh` copies two workflow files and `SPARKY.md` into your target repo:
+`setup.sh` copies three workflow files and `SPARKY.md` into your target repo:
 
 ```
 your-target-repo/
 ├── .github/
 │   └── workflows/
 │       ├── sparky-analyze.yml   ← analyze workflow
-│       └── sparky-respond.yml  ← implement + review workflow
+│       ├── sparky-respond.yml  ← implement + review workflow
+│       └── sparky-discuss.yml  ← discussion refinement workflow
 └── SPARKY.md                   ← agent instructions (customize this)
 ```
 
@@ -78,6 +81,7 @@ Then, in your target repo:
 cd /path/to/your-target-repo
 git add .github/workflows/sparky-analyze.yml \
         .github/workflows/sparky-respond.yml \
+        .github/workflows/sparky-discuss.yml \
         SPARKY.md
 git commit -m "Add Sparky autonomous agent workflows"
 git push
@@ -95,7 +99,10 @@ After running `setup.sh`, complete these one-time steps in your target repositor
 2. **Create a `sparky` label**
    Go to **Issues → Labels → New label** and create a label named exactly `sparky`.
 
-3. **Customize `SPARKY.md`** (optional but recommended)
+3. **Enable GitHub Discussions** (optional, but recommended for refinement Q&A)
+   Go to **Settings → Features → Discussions** and enable it. If Discussions are not enabled, Sparky falls back to answering questions directly in issue comments.
+
+4. **Customize `SPARKY.md`** (optional but recommended)
    Open `SPARKY.md` and fill in the **Target Repo Instructions** section at the bottom with project-specific context — see [Customizing SPARKY.md](#customizing-sparkymd) below.
 
 ---
@@ -118,7 +125,7 @@ Once you're happy with the plan, comment on the issue:
 
 Claude will create a `sparky/`-prefixed branch, implement the plan, and open a pull request.
 
-#### Ask a question
+#### Ask a question or refine a plan
 
 At any point, comment on an issue (without "implement"):
 
@@ -126,7 +133,15 @@ At any point, comment on an issue (without "implement"):
 @sparky what files would be affected by this change?
 ```
 
-Claude will explore the codebase and reply — without touching any files.
+Claude will move the conversation to a GitHub Discussion (titled `Sparky Refinement: Issue #N — <title>`) and post a link on the issue. Q&A and plan revisions happen there, keeping the issue thread clean.
+
+When you're happy with the plan, comment in the discussion:
+
+```
+@sparky finalize
+```
+
+This posts the final approved plan back to the issue. Then comment `@sparky implement` on the issue to start implementation.
 
 #### Respond to PR review feedback
 

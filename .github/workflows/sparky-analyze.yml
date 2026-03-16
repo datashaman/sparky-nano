@@ -7,6 +7,7 @@ on:
 permissions:
   contents: read
   issues: write
+  discussions: write
   id-token: write
 
 jobs:
@@ -48,10 +49,14 @@ jobs:
             4. Produce a detailed analysis and plan (your response will be posted as a comment)
 
             If the issue is unclear, ambiguous, or missing critical details:
-            - Ask specific clarifying questions
-            - Explain what you need to know and why
-            - Do NOT propose a plan until you have enough information
-            - End with: "Please answer these questions so I can propose a plan."
+            - Use `gh api graphql` to create a GitHub Discussion for refinement:
+              a. Get the repo ID and a Q&A or General category ID:
+                 gh api graphql -f query='query { repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") { id discussionCategories(first:10) { nodes { id name } } } }'
+              b. Create a discussion titled "Sparky Refinement: Issue #${{ github.event.issue.number }} — ${{ github.event.issue.title }}"
+                 with a body that links back to the issue and lists your clarifying questions
+              c. Post a comment on the issue: "I have questions before I can propose a plan. I've opened a discussion for refinement: <discussion_url>"
+            - If Discussions are not enabled on this repo, fall back to asking clarifying questions directly in this comment
+            - Do NOT ask questions directly in the issue comment (unless Discussions are unavailable)
 
             If the issue is clear enough to plan, your response MUST include:
             - **Summary**: One-line description of what needs to change

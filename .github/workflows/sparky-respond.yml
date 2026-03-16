@@ -10,6 +10,7 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
+  discussions: write
   id-token: write
 
 jobs:
@@ -102,20 +103,30 @@ jobs:
           prompt: |
             ${{ steps.sparky_md_interactive.outputs.content }}
 
-            You are answering a question or revising a plan on issue #${{ github.event.issue.number }}.
+            Someone has asked a question or requested a plan revision on issue #${{ github.event.issue.number }}.
 
             Title: ${{ github.event.issue.title }}
 
-            Instructions:
-            1. Read the question or feedback in the comment
-            2. Explore the codebase if needed to give an accurate answer
-            3. If asked to revise a plan, post an updated plan
-            4. Be helpful and specific — reference actual files, functions, and line numbers
+            Instead of answering directly in the issue thread, move this to a GitHub Discussion:
+            1. Search for an existing discussion titled "Sparky Refinement: Issue #${{ github.event.issue.number }} — ${{ github.event.issue.title }}":
+               gh api graphql -f query='query { repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") { discussions(first:20, states:[OPEN]) { nodes { id title url } } } }'
+            2. If a matching discussion exists, post your answer as a comment there:
+               gh api graphql -f query='mutation { addDiscussionComment(input: { discussionId:"<id>", body:"<answer>" }) { comment { url } } }'
+            3. If no matching discussion exists, create one:
+               a. Get the repo ID and a Q&A or General category ID:
+                  gh api graphql -f query='query { repository(owner:"${{ github.repository_owner }}", name:"${{ github.event.repository.name }}") { id discussionCategories(first:10) { nodes { id name } } } }'
+               b. Create a discussion titled "Sparky Refinement: Issue #${{ github.event.issue.number }} — ${{ github.event.issue.title }}"
+                  with the question and your answer in the body
+            4. Post a brief comment on this issue linking to the discussion:
+               "I've moved this to a refinement discussion: <discussion_url>"
+            5. If Discussions are not enabled on this repo, fall back to answering here directly
+
+            When the user is ready for implementation, direct them to comment `@sparky implement` on the issue.
 
             IMPORTANT:
             - Do NOT modify any files. This is a read-only interaction.
             - Do NOT create branches or pull requests.
-            - If the user wants implementation, tell them to comment `@sparky implement`.
+            - Keep Q&A in the discussion thread to reduce issue clutter.
           claude_args: |
             --disallowedTools "Edit,Write,NotebookEdit,Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(git rm:*)"
           show_full_output: true
